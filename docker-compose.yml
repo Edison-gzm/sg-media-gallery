@@ -1,0 +1,15 @@
+ 
+version: "3.8"
+
+services:
+  sg-media-gallery:
+    build: .
+    container_name: sg-media-gallery
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    stdin_open: true
