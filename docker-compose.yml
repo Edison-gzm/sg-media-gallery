@@ -1,15 +1,36 @@
- 
+# Este archivo levanta todos los servicios de la app juntos.
+# Frontend en puerto 3000 y Backend en puerto 4000.
+# Los volumes permiten ver cambios en tiempo real sin reiniciar Docker.
+
 version: "3.8"
 
 services:
-  sg-media-gallery:
-    build: .
-    container_name: sg-media-gallery
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sg-media-gallery-frontend
     ports:
       - "3000:3000"
     volumes:
-      - .:/app
-      - /app/node_modules
+      - ./frontend:/app/frontend
+      - /app/frontend/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
     stdin_open: true
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sg-media-gallery-backend
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      - PORT=4000
