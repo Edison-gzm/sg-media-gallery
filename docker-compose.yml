@@ -1,11 +1,56 @@
-# Este archivo levanta todos los servicios de la app juntos.
-# Frontend en puerto 3000 y Backend en puerto 4000.
-# Los volumes permiten ver cambios en tiempo real sin reiniciar Docker.
-
-version: "3.8"
+# Este archivo levanta los 3 servicios de la app juntos:
+# Frontend (React), Backend (Express) y Base de datos (PostgreSQL)
+# Solo con "docker-compose up" arranca todo automáticamente
 
 services:
 
+  # Base de datos PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: sg-media-gallery-postgres
+    environment:
+      POSTGRES_DB: sg_media_gallery
+      POSTGRES_USER: edison
+      POSTGRES_PASSWORD: sg2024
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - sg-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U edison -d sg_media_gallery"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Backend Node/Express
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sg-media-gallery-backend
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      JWT_SECRET: sg-jwt-secret-2024
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: sg_media_gallery
+      DB_USER: edison
+      DB_PASSWORD: sg2024
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - sg-network
+
+  # Frontend React
   frontend:
     build:
       context: .
@@ -18,19 +63,18 @@ services:
       - /app/frontend/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
-    stdin_open: true
+      - REACT_APP_API_URL=http://localhost:4000/api
     depends_on:
       - backend
+    stdin_open: true
+    networks:
+      - sg-network
 
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: sg-media-gallery-backend
-    ports:
-      - "4000:4000"
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
-    environment:
-      - PORT=4000
+# Volumen para persistir los datos de PostgreSQL
+volumes:
+  postgres_data:
+
+# Red interna para que los servicios se comuniquen entre ellos
+networks:
+  sg-network:
+    driver: bridge

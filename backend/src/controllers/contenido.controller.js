@@ -1,38 +1,21 @@
 // Controlador del contenido y favoritos
 
-
-const fs = require('fs');
-const path = require('path');
-
-
-const DB_PATH = path.join(__dirname, '../../data/db.json');
-
-
-const leerDB = () => {
-  const data = fs.readFileSync(DB_PATH, 'utf-8');
-  return JSON.parse(data);
-};
-
-
-const escribirDB = (data) => {
-  fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
-};
+const { Contenido, Favorito } = require('../models');
 
 // Obtener todo el contenido de la galería
-const obtenerContenido = (req, res) => {
+const obtenerContenido = async (req, res) => {
   try {
-    const db = leerDB();
-    res.json(db.contenido);
+    const contenido = await Contenido.findAll();
+    res.json(contenido);
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al obtener el contenido' });
   }
 };
 
 // Obtener un item específico por id
-const obtenerContenidoPorId = (req, res) => {
+const obtenerContenidoPorId = async (req, res) => {
   try {
-    const db = leerDB();
-    const item = db.contenido.find(c => c.id === parseInt(req.params.id));
+    const item = await Contenido.findByPk(req.params.id);
     if (!item) {
       return res.status(404).json({ mensaje: 'Contenido no encontrado' });
     }
@@ -42,61 +25,55 @@ const obtenerContenidoPorId = (req, res) => {
   }
 };
 
-// Obtener todos los favoritos del usuario
-const obtenerFavoritos = (req, res) => {
+// Obtener todos los favoritos
+const obtenerFavoritos = async (req, res) => {
   try {
-    const db = leerDB();
-    res.json(db.favoritos);
+    const favoritos = await Favorito.findAll({
+      include: [{ model: Contenido }]
+    });
+    res.json(favoritos);
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al obtener los favoritos' });
   }
 };
 
 // Agregar un item a favoritos
-const agregarFavorito = (req, res) => {
+const agregarFavorito = async (req, res) => {
   try {
-    const db = leerDB();
-    const { id } = req.body;
+    const { contenidoId } = req.body;
 
-    // Verifica si el item existe
-    const item = db.contenido.find(c => c.id === parseInt(id));
+    // Verifica si el contenido existe
+    const item = await Contenido.findByPk(contenidoId);
     if (!item) {
       return res.status(404).json({ mensaje: 'Contenido no encontrado' });
     }
 
-    // Verifica si ya está
-    const yaExiste = db.favoritos.find(f => f.id === parseInt(id));
+    // Verifica si ya está en favoritos
+    const yaExiste = await Favorito.findOne({ where: { contenidoId } });
     if (yaExiste) {
       return res.status(400).json({ mensaje: 'Este item ya está en favoritos' });
     }
 
-  
-    db.favoritos.push(item);
-    escribirDB(db);
+    // Crea el favorito en PostgreSQL
+    const favorito = await Favorito.create({ contenidoId });
+    res.status(201).json({ mensaje: 'Agregado a favoritos', favorito });
 
-    res.status(201).json({ mensaje: 'Agregado a favoritos', item });
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al agregar a favoritos' });
   }
 };
 
 // Eliminar un item de favoritos
-const eliminarFavorito = (req, res) => {
+const eliminarFavorito = async (req, res) => {
   try {
-    const db = leerDB();
-    const id = parseInt(req.params.id);
-
-    // Verifica si existe en favoritos
-    const existe = db.favoritos.find(f => f.id === id);
-    if (!existe) {
+    const favorito = await Favorito.findByPk(req.params.id);
+    if (!favorito) {
       return res.status(404).json({ mensaje: 'Favorito no encontrado' });
     }
 
-
-    db.favoritos = db.favoritos.filter(f => f.id !== id);
-    escribirDB(db);
-
+    await favorito.destroy();
     res.json({ mensaje: 'Eliminado de favoritos' });
+
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al eliminar el favorito' });
   }
