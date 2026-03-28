@@ -1,0 +1,72 @@
+ /* Estilos globales de la aplicación
+   Define variables de colores, fuentes y estilos base
+   que se usan en todos los componentes */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Variables globales de colores y espaciado */
+:root {
+  --color-primario: #1A7A6E;
+  --color-primario-oscuro: #145F56;
+  --color-acento: #F0A500;
+  --color-fondo: #0D1117;
+  --color-fondo-card: #161B22;
+  --color-fondo-modal: rgba(0, 0, 0, 0.85);
+  --color-texto: #FFFFFF;
+  --color-texto-secundario: #8B949E;
+  --color-borde: rgba(26, 122, 110, 0.3);
+  --radio-borde: 8px;
+  --sombra: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --transicion: all 0.3s ease;
+}
+
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  min-height: 100vh;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-fondo);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primario);
+  border-radius: 3px;
+}
+
+/* Clase utilitaria para centrar contenido */
+.contenedor {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}

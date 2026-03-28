@@ -1,0 +1,141 @@
+ 
+/* Estilos del componente GaleriaGrid
+   Muestra las imágenes y videos en un grid responsivo */
+
+.galeria {
+  padding: 32px 0;
+}
+
+.galeria__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Tarjeta individual */
+.galeria__card {
+  background: var(--color-fondo-card);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-borde);
+  overflow: hidden;
+  cursor: pointer;
+  transition: var(--transicion);
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.galeria__card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primario);
+  box-shadow: var(--sombra);
+}
+
+/* Contenedor de imagen/video */
+.galeria__card-imagen {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.galeria__card-imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transicion);
+}
+
+.galeria__card:hover .galeria__card-imagen img {
+  transform: scale(1.05);
+}
+
+/* Badge de tipo */
+.galeria__badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--color-texto);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  backdrop-filter: blur(4px);
+}
+
+.galeria__badge--video {
+  background: rgba(240, 165, 0, 0.85);
+  color: #000;
+}
+
+/* Botón favorito */
+.galeria__btn-favorito {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  color: var(--color-texto);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transicion);
+  backdrop-filter: blur(4px);
+}
+
+.galeria__btn-favorito:hover {
+  background: rgba(240, 165, 0, 0.85);
+  color: #000;
+}
+
+.galeria__btn-favorito--activo {
+  background: rgba(240, 165, 0, 0.85);
+  color: #000;
+}
+
+/* Info de la tarjeta */
+.galeria__card-info {
+  padding: 14px 16px;
+}
+
+.galeria__card-titulo {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-texto);
+  margin-bottom: 4px;
+}
+
+.galeria__card-categoria {
+  font-size: 12px;
+  color: var(--color-texto-secundario);
+}
+
+/* Estado de carga */
+.galeria__cargando {
+  text-align: center;
+  padding: 80px 24px;
+  color: var(--color-texto-secundario);
+  font-size: 16px;
+}
+
+/* Estado vacío */
+.galeria__vacio {
+  text-align: center;
+  padding: 80px 24px;
+  color: var(--color-texto-secundario);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .galeria__grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+  }
+}
