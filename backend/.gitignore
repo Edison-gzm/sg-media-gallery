@@ -1,0 +1,9 @@
+ 
+# Dependencies
+node_modules/
+
+# Environment variables - never upload to GitHub
+.env
+
+# Logs
+*.log
