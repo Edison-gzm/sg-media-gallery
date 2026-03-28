@@ -1,0 +1,120 @@
+ 
+/* Estilos del componente Navbar
+   Barra de navegación principal con categorías y botón de login */
+
+.navbar {
+  background-color: var(--color-fondo-card);
+  border-bottom: 1px solid var(--color-borde);
+  padding: 16px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+
+.navbar__contenedor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Logo */
+.navbar__logo {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primario);
+  letter-spacing: -0.5px;
+}
+
+.navbar__logo span {
+  color: var(--color-acento);
+}
+
+/* Categorías */
+.navbar__categorias {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+}
+
+.navbar__btn-categoria {
+  background: transparent;
+  border: 1px solid var(--color-borde);
+  color: var(--color-texto-secundario);
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  transition: var(--transicion);
+}
+
+.navbar__btn-categoria:hover {
+  border-color: var(--color-primario);
+  color: var(--color-texto);
+}
+
+.navbar__btn-categoria--activo {
+  background: var(--color-primario);
+  border-color: var(--color-primario);
+  color: var(--color-texto);
+  font-weight: 500;
+}
+
+/* Botones de acción */
+.navbar__acciones {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navbar__btn-presentacion {
+  background: var(--color-acento);
+  border: none;
+  color: #000;
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  transition: var(--transicion);
+}
+
+.navbar__btn-presentacion:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+.navbar__btn-login {
+  background: transparent;
+  border: 1px solid var(--color-primario);
+  color: var(--color-primario);
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  transition: var(--transicion);
+}
+
+.navbar__btn-login:hover {
+  background: var(--color-primario);
+  color: var(--color-texto);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar__contenedor {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .navbar__categorias {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}

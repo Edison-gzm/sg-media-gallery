@@ -24,10 +24,10 @@ CREATE TABLE IF NOT EXISTS favoritos (
 INSERT INTO contenido (titulo, tipo, url, categoria) VALUES
   ('Bosque Verde', 'imagen', 'https://picsum.photos/seed/naturaleza1/800/600', 'Naturaleza'),
   ('Montaña Nevada', 'imagen', 'https://picsum.photos/seed/naturaleza2/800/600', 'Naturaleza'),
-  ('Naturaleza en 4K', 'video', 'https://www.youtube.com/watch?v=BHACKCNDMW8', 'Naturaleza'),
+  ('Naturaleza en Movimiento', 'video', 'https://www.w3schools.com/html/mov_bbb.mp4', 'Naturaleza'),
   ('Inteligencia Artificial', 'imagen', 'https://picsum.photos/seed/tech1/800/600', 'Tecnología'),
   ('Circuitos del Futuro', 'imagen', 'https://picsum.photos/seed/tech2/800/600', 'Tecnología'),
-  ('El Futuro de la IA', 'video', 'https://www.youtube.com/watch?v=kCc8FmEb1nY', 'Tecnología'),
+  ('Código en Acción', 'video', 'https://www.w3schools.com/html/movie.mp4', 'Tecnología'),
   ('Pintura Abstracta', 'imagen', 'https://picsum.photos/seed/arte1/800/600', 'Arte'),
   ('Escultura Moderna', 'imagen', 'https://picsum.photos/seed/arte2/800/600', 'Arte'),
-  ('Arte Digital en Movimiento', 'video', 'https://www.youtube.com/watch?v=TJ6DnRhj3kA', 'Arte');
+  ('Arte en Movimiento', 'video', 'https://www.w3schools.com/html/mov_bbb.mp4', 'Arte');
