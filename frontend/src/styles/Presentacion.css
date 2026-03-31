@@ -1,8 +1,6 @@
- 
-/* Estilos del componente Presentacion
-   Modo presentación automática que recorre el contenido secuencialmente */
+/* Presentation component styles - automatic slideshow mode that cycles through content sequentially */
 
-.presentacion {
+.presentation {
   position: fixed;
   inset: 0;
   background: #000;
@@ -14,8 +12,7 @@
   animation: fadeIn 0.3s ease;
 }
 
-/* Barra superior */
-.presentacion__header {
+.presentation__header {
   position: absolute;
   top: 0;
   left: 0;
@@ -27,19 +24,18 @@
   background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
 }
 
-.presentacion__contador {
+.presentation__counter {
   color: var(--color-texto-secundario);
   font-size: 14px;
 }
 
-.presentacion__acciones {
+.presentation__actions {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-/* Control de duración */
-.presentacion__duracion {
+.presentation__duration {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -47,7 +43,7 @@
   font-size: 13px;
 }
 
-.presentacion__duracion input {
+.presentation__duration input {
   width: 50px;
   background: rgba(255,255,255,0.1);
   border: 1px solid var(--color-borde);
@@ -58,8 +54,7 @@
   text-align: center;
 }
 
-/* Botón salir */
-.presentacion__btn-salir {
+.presentation__btn-exit {
   background: rgba(255,255,255,0.1);
   border: 1px solid var(--color-borde);
   color: var(--color-texto);
@@ -71,13 +66,12 @@
   transition: var(--transicion);
 }
 
-.presentacion__btn-salir:hover {
+.presentation__btn-exit:hover {
   background: var(--color-primario);
   border-color: var(--color-primario);
 }
 
-/* Contenido principal */
-.presentacion__contenido {
+.presentation__content {
   width: 100%;
   max-width: 900px;
   padding: 80px 24px;
@@ -86,7 +80,7 @@
   justify-content: center;
 }
 
-.presentacion__imagen {
+.presentation__image {
   max-width: 100%;
   max-height: 70vh;
   object-fit: contain;
@@ -94,12 +88,11 @@
   animation: fadeIn 0.5s ease;
 }
 
-.presentacion__video {
+.presentation__video {
   width: 100%;
 }
 
-/* Título */
-.presentacion__titulo {
+.presentation__title {
   position: absolute;
   bottom: 40px;
   left: 50%;
@@ -112,8 +105,7 @@
   white-space: nowrap;
 }
 
-/* Barra de progreso */
-.presentacion__progreso {
+.presentation__progress {
   position: absolute;
   bottom: 0;
   left: 0;

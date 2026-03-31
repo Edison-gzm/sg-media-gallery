@@ -1,18 +1,17 @@
-// Rutas de la API para el contenido de la galería y los favoritos
-// Las rutas de favoritos están protegidas por autenticación
+// Gallery and favorites routes - favorites routes are protected by authentication
 
 const express = require('express');
 const router = express.Router();
-const contenidoController = require('../controllers/contenido.controller');
-const verificarToken = require('../middleware/auth.middleware');
+const { getContent, getContentById, getFavorites, addFavorite, removeFavorite } = require('../controllers/contenido.controller');
+const verifyToken = require('../middleware/auth.middleware');
 
-// Rutas públicas - cualquiera puede ver el contenido
-router.get('/contenido', contenidoController.obtenerContenido);
-router.get('/contenido/:id', contenidoController.obtenerContenidoPorId);
+// Public routes
+router.get('/content', getContent);
+router.get('/content/:id', getContentById);
 
-// Rutas protegidas - solo usuarios autenticados pueden ver y modificar favoritos
-router.get('/favoritos', verificarToken, contenidoController.obtenerFavoritos);
-router.post('/favoritos', verificarToken, contenidoController.agregarFavorito);
-router.delete('/favoritos/:id', verificarToken, contenidoController.eliminarFavorito);
+// Protected routes
+router.get('/favorites', verifyToken, getFavorites);
+router.post('/favorites', verifyToken, addFavorite);
+router.delete('/favorites/:id', verifyToken, removeFavorite);
 
 module.exports = router;

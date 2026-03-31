@@ -1,88 +1,80 @@
-// Controlador del contenido y favoritos
+// Gallery and favorites controller - handles content retrieval and favorites management
 
-const { Contenido, Favorito } = require('../models');
+const { Content, Favorite } = require('../models');
 
-// Obtener todo el contenido de la galería
-const obtenerContenido = async (req, res) => {
+const getContent = async (req, res) => {
   try {
-    const contenido = await Contenido.findAll();
-    res.json(contenido);
+    const content = await Content.findAll();
+    res.json(content);
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al obtener el contenido' });
+    res.status(500).json({ message: 'Error fetching content' });
   }
 };
 
-// Obtener un item específico por id
-const obtenerContenidoPorId = async (req, res) => {
+const getContentById = async (req, res) => {
   try {
-    const item = await Contenido.findByPk(req.params.id);
+    const item = await Content.findByPk(req.params.id);
     if (!item) {
-      return res.status(404).json({ mensaje: 'Contenido no encontrado' });
+      return res.status(404).json({ message: 'Content not found' });
     }
     res.json(item);
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al obtener el contenido' });
+    res.status(500).json({ message: 'Error fetching content' });
   }
 };
 
-// Obtener todos los favoritos
-const obtenerFavoritos = async (req, res) => {
+const getFavorites = async (req, res) => {
   try {
-    const favoritos = await Favorito.findAll({
-      include: [{ model: Contenido }]
+    const favorites = await Favorite.findAll({
+      include: [{ model: Content }]
     });
-    res.json(favoritos);
+    res.json(favorites);
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al obtener los favoritos' });
+    res.status(500).json({ message: 'Error fetching favorites' });
   }
 };
 
-// Agregar un item a favoritos
-const agregarFavorito = async (req, res) => {
+const addFavorite = async (req, res) => {
   try {
-    const { contenidoId } = req.body;
+    const { contentId } = req.body;
 
-    // Verifica si el contenido existe
-    const item = await Contenido.findByPk(contenidoId);
+    const item = await Content.findByPk(contentId);
     if (!item) {
-      return res.status(404).json({ mensaje: 'Contenido no encontrado' });
+      return res.status(404).json({ message: 'Content not found' });
     }
 
-    // Verifica si ya está en favoritos
-    const yaExiste = await Favorito.findOne({ where: { contenidoId } });
-    if (yaExiste) {
-      return res.status(400).json({ mensaje: 'Este item ya está en favoritos' });
+    const alreadyExists = await Favorite.findOne({ where: { contentId } });
+    if (alreadyExists) {
+      return res.status(400).json({ message: 'Item already in favorites' });
     }
 
-    // Crea el favorito en PostgreSQL
-    const favorito = await Favorito.create({ contenidoId });
-    res.status(201).json({ mensaje: 'Agregado a favoritos', favorito });
+    const favorite = await Favorite.create({ contentId });
+    res.status(201).json({ message: 'Added to favorites', favorite });
 
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al agregar a favoritos' });
+    res.status(500).json({ message: 'Error adding to favorites' });
   }
 };
 
-// Eliminar un item de favoritos
-const eliminarFavorito = async (req, res) => {
+const removeFavorite = async (req, res) => {
   try {
-    const favorito = await Favorito.findByPk(req.params.id);
-    if (!favorito) {
-      return res.status(404).json({ mensaje: 'Favorito no encontrado' });
+    const favorite = await Favorite.findByPk(req.params.id);
+    if (!favorite) {
+      return res.status(404).json({ message: 'Favorite not found' });
     }
 
-    await favorito.destroy();
-    res.json({ mensaje: 'Eliminado de favoritos' });
+    await favorite.destroy();
+    res.json({ message: 'Removed from favorites' });
 
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al eliminar el favorito' });
+    res.status(500).json({ message: 'Error removing favorite' });
   }
 };
 
 module.exports = {
-  obtenerContenido,
-  obtenerContenidoPorId,
-  obtenerFavoritos,
-  agregarFavorito,
-  eliminarFavorito
+  getContent,
+  getContentById,
+  getFavorites,
+  addFavorite,
+  removeFavorite
 };

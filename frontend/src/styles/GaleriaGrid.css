@@ -1,12 +1,10 @@
- 
-/* Estilos del componente GaleriaGrid
-   Muestra las imágenes y videos en un grid responsivo */
+/* GalleryGrid component styles - displays images and videos in a responsive grid */
 
-.galeria {
+.gallery {
   padding: 32px 0;
 }
 
-.galeria__grid {
+.gallery__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
@@ -15,49 +13,46 @@
   padding: 0 24px;
 }
 
-/* Tarjeta individual */
-.galeria__card {
-  background: var(--color-fondo-card);
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio-borde);
+.gallery__card {
+  background: var(--color-background-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
   overflow: hidden;
   cursor: pointer;
-  transition: var(--transicion);
+  transition: var(--transition);
   animation: fadeIn 0.4s ease forwards;
 }
 
-.galeria__card:hover {
+.gallery__card:hover {
   transform: translateY(-4px);
-  border-color: var(--color-primario);
-  box-shadow: var(--sombra);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow);
 }
 
-/* Contenedor de imagen/video */
-.galeria__card-imagen {
+.gallery__card-image {
   position: relative;
   width: 100%;
   height: 200px;
   overflow: hidden;
 }
 
-.galeria__card-imagen img {
+.gallery__card-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: var(--transicion);
+  transition: var(--transition);
 }
 
-.galeria__card:hover .galeria__card-imagen img {
+.gallery__card:hover .gallery__card-image img {
   transform: scale(1.05);
 }
 
-/* Badge de tipo */
-.galeria__badge {
+.gallery__badge {
   position: absolute;
   top: 10px;
   right: 10px;
   background: rgba(0, 0, 0, 0.7);
-  color: var(--color-texto);
+  color: var(--color-text);
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 11px;
@@ -65,19 +60,18 @@
   backdrop-filter: blur(4px);
 }
 
-.galeria__badge--video {
+.gallery__badge--video {
   background: rgba(240, 165, 0, 0.85);
   color: #000;
 }
 
-/* Botón favorito */
-.galeria__btn-favorito {
+.gallery__btn-favorite {
   position: absolute;
   top: 10px;
   left: 10px;
   background: rgba(0, 0, 0, 0.7);
   border: none;
-  color: var(--color-texto);
+  color: var(--color-text);
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -86,56 +80,120 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: var(--transicion);
+  transition: var(--transition);
   backdrop-filter: blur(4px);
 }
 
-.galeria__btn-favorito:hover {
+.gallery__btn-favorite:hover {
   background: rgba(240, 165, 0, 0.85);
   color: #000;
 }
 
-.galeria__btn-favorito--activo {
+.gallery__btn-favorite--active {
   background: rgba(240, 165, 0, 0.85);
   color: #000;
 }
 
-/* Info de la tarjeta */
-.galeria__card-info {
+.gallery__card-info {
   padding: 14px 16px;
 }
 
-.galeria__card-titulo {
+.gallery__card-title {
   font-size: 15px;
   font-weight: 500;
-  color: var(--color-texto);
+  color: var(--color-text);
   margin-bottom: 4px;
 }
 
-.galeria__card-categoria {
+.gallery__card-category {
   font-size: 12px;
-  color: var(--color-texto-secundario);
+  color: var(--color-text-secondary);
 }
 
-/* Estado de carga */
-.galeria__cargando {
+.gallery__loading {
   text-align: center;
   padding: 80px 24px;
-  color: var(--color-texto-secundario);
+  color: var(--color-text-secondary);
   font-size: 16px;
 }
 
-/* Estado vacío */
-.galeria__vacio {
+.gallery__empty {
   text-align: center;
   padding: 80px 24px;
-  color: var(--color-texto-secundario);
+  color: var(--color-text-secondary);
 }
 
-/* Responsive */
+.gallery__video-thumbnail {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.gallery__video-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.7);
+  transition: var(--transition);
+}
+
+.gallery__card:hover .gallery__video-thumbnail img {
+  transform: scale(1.05);
+  filter: brightness(0.5);
+}
+
+.gallery__play-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(240, 165, 0, 0.9);
+  color: #000;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  z-index: 2;
+  transition: var(--transition);
+}
+
+.gallery__card:hover .gallery__play-icon {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
 @media (max-width: 768px) {
-  .galeria__grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 14px;
+  .gallery__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 0 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery__grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 0 16px;
+    max-width: 100%;
+  }
+
+  .gallery__card {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .gallery__card-image {
+    height: 220px;
+  }
+
+  .gallery__video-thumbnail {
+    height: 220px;
+  }
+
+  .gallery__video-thumbnail img {
+    height: 220px;
   }
 }

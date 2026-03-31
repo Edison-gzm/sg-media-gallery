@@ -1,66 +1,50 @@
- // Componente Login
-// Formulario de autenticación básica
-// Al hacer login exitoso guarda el token JWT en localStorage
-// y notifica al componente padre que el usuario está autenticado
+// Login form that authenticates the user and stores the JWT token in localStorage
 
 import { useState } from 'react';
 import { login } from '../services/api';
 import '../styles/Login.css';
 
-function Login({ onCerrar, onLoginExitoso }) {
+function Login({ onClose, onLoginSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [cargando, setCargando] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setCargando(true);
+    setLoading(true);
 
     try {
-      // Llama al endpoint de login del backend
-      const respuesta = await login(email, password);
-      const { token } = respuesta.data;
-
-      // Guarda el token en localStorage
+      const response = await login(email, password);
+      const { token } = response.data;
       localStorage.setItem('token', token);
-
-      // Notifica al padre que el login fue exitoso
-      onLoginExitoso(token);
-      onCerrar();
-
+      onLoginSuccess(token);
+      onClose();
     } catch (err) {
       setError('Email o contraseña incorrectos');
     } finally {
-      setCargando(false);
+      setLoading(false);
     }
   };
 
-  // Cierra al hacer clic en el overlay
   const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) onCerrar();
+    if (e.target === e.currentTarget) onClose();
   };
 
   return (
     <div className="login__overlay" onClick={handleOverlayClick}>
-      <div className="login__contenedor">
+      <div className="login__container">
 
-        {/* Botón cerrar */}
-        <button className="login__btn-cerrar" onClick={onCerrar}>✕</button>
+        <button className="login__close-btn" onClick={onClose}>✕</button>
 
-        {/* Título */}
-        <h2 className="login__titulo">Iniciar sesión</h2>
-        <p className="login__subtitulo">
-          Inicia sesión para guardar tus favoritos
-        </p>
+        <h2 className="login__title">Iniciar sesión</h2>
+        <p className="login__subtitle">Inicia sesión para guardar tus favoritos</p>
 
-        {/* Error */}
         {error && <div className="login__error">{error}</div>}
 
-        {/* Formulario */}
         <form onSubmit={handleSubmit}>
-          <div className="login__campo">
+          <div className="login__field">
             <label className="login__label">Email</label>
             <input
               type="email"
@@ -72,7 +56,7 @@ function Login({ onCerrar, onLoginExitoso }) {
             />
           </div>
 
-          <div className="login__campo">
+          <div className="login__field">
             <label className="login__label">Contraseña</label>
             <input
               type="password"
@@ -86,15 +70,14 @@ function Login({ onCerrar, onLoginExitoso }) {
 
           <button
             type="submit"
-            className="login__btn-submit"
-            disabled={cargando}
+            className="login__submit-btn"
+            disabled={loading}
           >
-            {cargando ? 'Iniciando sesión...' : 'Iniciar sesión'}
+            {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
           </button>
         </form>
 
-        {/* Credenciales de prueba */}
-        <div className="login__credenciales">
+        <div className="login__test-credentials">
           Credenciales de prueba:<br />
           <span>usuario@sg.com</span> / <span>1234</span>
         </div>

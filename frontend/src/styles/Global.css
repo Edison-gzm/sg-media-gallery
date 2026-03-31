@@ -1,26 +1,22 @@
- /* Estilos globales de la aplicación
-   Define variables de colores, fuentes y estilos base
-   que se usan en todos los componentes */
+ /* Global app styles - defines color variables, fonts, and base styles used across all components */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* Variables globales de colores y espaciado */
 :root {
-  --color-primario: #1A7A6E;
-  --color-primario-oscuro: #145F56;
-  --color-acento: #F0A500;
-  --color-fondo: #0D1117;
-  --color-fondo-card: #161B22;
-  --color-fondo-modal: rgba(0, 0, 0, 0.85);
-  --color-texto: #FFFFFF;
-  --color-texto-secundario: #8B949E;
-  --color-borde: rgba(26, 122, 110, 0.3);
-  --radio-borde: 8px;
-  --sombra: 0 4px 20px rgba(0, 0, 0, 0.3);
-  --transicion: all 0.3s ease;
+  --color-primary: #1A7A6E;
+  --color-primary-dark: #145F56;
+  --color-accent: #F0A500;
+  --color-background: #0D1117;
+  --color-background-card: #161B22;
+  --color-background-modal: rgba(0, 0, 0, 0.85);
+  --color-text: #FFFFFF;
+  --color-text-secondary: #8B949E;
+  --color-border: rgba(26, 122, 110, 0.3);
+  --border-radius: 8px;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --transition: all 0.3s ease;
 }
 
-/* Reset básico */
 * {
   margin: 0;
   padding: 0;
@@ -29,33 +25,30 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: var(--color-fondo);
-  color: var(--color-texto);
+  background-color: var(--color-background);
+  color: var(--color-text);
   min-height: 100vh;
 }
 
-/* Scrollbar personalizada */
 ::-webkit-scrollbar {
   width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-fondo);
+  background: var(--color-background);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-primario);
+  background: var(--color-primary);
   border-radius: 3px;
 }
 
-/* Clase utilitaria para centrar contenido */
-.contenedor {
+.container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
 }
 
-/* Animación de entrada */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -69,4 +62,38 @@ body {
 
 .fade-in {
   animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.gallery__card {
+  animation: scaleIn 0.3s ease forwards;
+}
+
+.modal__container {
+  animation: scaleIn 0.25s ease forwards;
+}
+
+.presentation__image {
+  animation: fadeIn 0.5s ease forwards;
 }

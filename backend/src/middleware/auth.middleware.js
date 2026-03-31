@@ -1,30 +1,22 @@
-// Middleware de autenticación con JWT
-// Verifica que el usuario tenga un token válido antes de acceder a los favoritos
+// JWT authentication middleware - validates token before accessing protected routes
 
 const jwt = require('jsonwebtoken');
 
-const verificarToken = (req, res, next) => {
-  // Busca el token en el header
+const verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
-  // Si no hay token, rechaza
   if (!token) {
-    return res.status(401).json({
-      mensaje: 'Acceso denegado. Debes iniciar sesión.'
-    });
+    return res.status(401).json({ message: 'Access denied. Please log in.' });
   }
 
-  // Verifica que el token sea válido
-  jwt.verify(token, process.env.JWT_SECRET, (err, usuario) => {
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
-      return res.status(403).json({
-        mensaje: 'Token inválido o expirado.'
-      });
+      return res.status(403).json({ message: 'Invalid or expired token.' });
     }
-    req.usuario = usuario;
+    req.user = user;
     next();
   });
 };
 
-module.exports = verificarToken;
+module.exports = verifyToken;

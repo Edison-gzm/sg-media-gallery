@@ -1,6 +1,4 @@
- 
-// Rutas de autenticación
-// Solo tiene una ruta: POST /api/auth/login
+// Authentication routes
 
 const express = require('express');
 const router = express.Router();

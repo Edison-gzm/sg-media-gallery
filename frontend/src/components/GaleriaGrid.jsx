@@ -1,65 +1,64 @@
- // Componente GaleriaGrid
-// Muestra todas las imágenes y videos en un grid responsivo
-// Permite hacer clic en cada item para verlo en detalle
-// y marcar/desmarcar favoritos si el usuario está autenticado
+//It is the main view of the gallery, the grid where the user sees all the content and can interact with it.
 
 import '../styles/GaleriaGrid.css';
 
-function GaleriaGrid({ items, cargando, onClickItem, favoritos, onToggleFavorito, usuarioAutenticado }) {
+function GalleryGrid({ items, loading, onItemClick, favorites, onToggleFavorite, isAuthenticated }) {
 
-  // Verifica si un item está en favoritos
-  const esFavorito = (id) => favoritos.some(f => f.Contenido?.id === id || f.contenidoId === id);
+  const isFavorite = (id) => favorites.some(f => f.Content?.id === id || f.contentId === id);
 
-  if (cargando) {
-    return <div className="galeria__cargando">Cargando galería...</div>;
+  if (loading) {
+    return <div className="gallery__loading">Cargando galería...</div>;
   }
 
   if (!items.length) {
-    return <div className="galeria__vacio">No hay contenido en esta categoría</div>;
+    return <div className="gallery__empty">No hay contenido en esta categoría</div>;
   }
 
   return (
-    <section className="galeria">
-      <div className="galeria__grid">
+    <section className="gallery">
+      <div className="gallery__grid">
         {items.map(item => (
           <div
             key={item.id}
-            className="galeria__card fade-in"
-            onClick={() => onClickItem(item)}
+            className="gallery__card fade-in"
+            onClick={() => onItemClick(item)}
           >
-            {/* Imagen o thumbnail del video */}
-            <div className="galeria__card-imagen">
-              <img
-                src={item.tipo === 'imagen'
-                  ? item.url
-                  : `https://img.youtube.com/vi/${item.url.split('v=')[1]}/hqdefault.jpg`
-                }
-                alt={item.titulo}
-              />
+            <div className="gallery__card-image">
+              {item.type === 'image' ? (
+                <img src={item.url} alt={item.title} />
+              ) : (
+                <div className="gallery__video-thumbnail">
+                  <span className="gallery__play-icon">▶</span>
+                  <img
+                    src={`https://picsum.photos/seed/${item.title}/800/600`}
+                    alt={item.title}
+                    onError={(e) => {
+                      e.target.src = `https://picsum.photos/seed/${item.id}thumb/800/600`;
+                    }}
+                  />
+                </div>
+              )}
 
-              {/* Badge de tipo */}
-              <span className={`galeria__badge ${item.tipo === 'video' ? 'galeria__badge--video' : ''}`}>
-                {item.tipo === 'video' ? '▶ Video' : '🖼 Imagen'}
+              <span className={`gallery__badge ${item.type === 'video' ? 'gallery__badge--video' : ''}`}>
+                {item.type === 'video' ? '▶ Video' : '🖼 Imagen'}
               </span>
 
-              {/* Botón favorito - solo visible si está autenticado */}
-              {usuarioAutenticado && (
+              {isAuthenticated && (
                 <button
-                  className={`galeria__btn-favorito ${esFavorito(item.id) ? 'galeria__btn-favorito--activo' : ''}`}
+                  className={`gallery__favorite-btn ${isFavorite(item.id) ? 'gallery__favorite-btn--active' : ''}`}
                   onClick={(e) => {
-                    e.stopPropagation(); // Evita abrir el modal al hacer clic en favorito
-                    onToggleFavorito(item);
+                    e.stopPropagation();
+                    onToggleFavorite(item);
                   }}
                 >
-                  {esFavorito(item.id) ? '★' : '☆'}
+                  {isFavorite(item.id) ? '★' : '☆'}
                 </button>
               )}
             </div>
 
-            {/* Info */}
-            <div className="galeria__card-info">
-              <p className="galeria__card-titulo">{item.titulo}</p>
-              <p className="galeria__card-categoria">{item.categoria}</p>
+            <div className="gallery__card-info">
+              <p className="gallery__card-title">{item.title}</p>
+              <p className="gallery__card-category">{item.category}</p>
             </div>
           </div>
         ))}
@@ -68,4 +67,4 @@ function GaleriaGrid({ items, cargando, onClickItem, favoritos, onToggleFavorito
   );
 }
 
-export default GaleriaGrid;
+export default GalleryGrid;
