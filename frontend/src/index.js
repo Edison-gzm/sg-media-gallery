@@ -1,7 +1,8 @@
-// Punto de entrada de la aplicación React
+// Application entry point. Mounts the React app into the DOM.
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import '@fontsource/inter';
 import App from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

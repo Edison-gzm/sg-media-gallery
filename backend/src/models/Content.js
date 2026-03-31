@@ -1,35 +1,34 @@
  
-// Modelo de la tabla Contenido 
-// Define la estructura de la tabla y los tipos de datos de cada columna
+// Sequelize library model to be able to communicate with the database instead of using SQL
 
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 
-const Contenido = sequelize.define('Contenido', {
+const Content = sequelize.define('Content', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  titulo: {
+  title: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  tipo: {
-    type: DataTypes.ENUM('imagen', 'video'),
+  type: {
+    type: DataTypes.ENUM('image', 'video'),
     allowNull: false
   },
   url: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  categoria: {
-    type: DataTypes.ENUM('Naturaleza', 'Tecnología', 'Arte'),
+  category: {
+    type: DataTypes.ENUM('Nature', 'Technology', 'Art'),
     allowNull: false
   }
 }, {
-  tableName: 'contenido',
+  tableName: 'content',
   timestamps: false
 });
 
-module.exports = Contenido;
+module.exports = Content;

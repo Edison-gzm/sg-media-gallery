@@ -1,6 +1,4 @@
- 
-/* Estilos del componente Modal
-   Vista detallada de imágenes con zoom y videos con autoplay */
+/* Modal component styles - detailed view for images with zoom and videos with autoplay */
 
 .modal__overlay {
   position: fixed;
@@ -14,7 +12,7 @@
   animation: fadeIn 0.3s ease;
 }
 
-.modal__contenedor {
+.modal__container {
   background: var(--color-fondo-card);
   border: 1px solid var(--color-borde);
   border-radius: var(--radio-borde);
@@ -24,8 +22,7 @@
   position: relative;
 }
 
-/* Botón cerrar */
-.modal__btn-cerrar {
+.modal__btn-close {
   position: absolute;
   top: 12px;
   right: 12px;
@@ -44,12 +41,11 @@
   transition: var(--transicion);
 }
 
-.modal__btn-cerrar:hover {
+.modal__btn-close:hover {
   background: var(--color-primario);
 }
 
-/* Imagen con zoom */
-.modal__imagen-contenedor {
+.modal__image-container {
   overflow: hidden;
   cursor: zoom-in;
   max-height: 500px;
@@ -59,19 +55,18 @@
   background: #000;
 }
 
-.modal__imagen {
+.modal__image {
   width: 100%;
   max-height: 500px;
   object-fit: contain;
   transition: transform 0.4s ease;
 }
 
-.modal__imagen--zoom {
+.modal__image--zoom {
   transform: scale(1.8);
   cursor: zoom-out;
 }
 
-/* Hint de zoom */
 .modal__zoom-hint {
   position: absolute;
   bottom: 70px;
@@ -84,23 +79,21 @@
   backdrop-filter: blur(4px);
 }
 
-/* Video */
-.modal__video-contenedor {
-  position: relative;
+.modal__video-container {
   width: 100%;
   background: #000;
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 250px;
 }
 
-.modal__video-contenedor video {
+.modal__video-container video {
   width: 100%;
   max-height: 500px;
   object-fit: contain;
 }
 
-/* Info */
 .modal__info {
   padding: 16px 20px;
   display: flex;
@@ -108,26 +101,30 @@
   justify-content: space-between;
 }
 
-.modal__titulo {
+.modal__title {
   font-size: 17px;
   font-weight: 600;
   color: var(--color-texto);
 }
 
-.modal__categoria {
+.modal__category {
   font-size: 13px;
   color: var(--color-texto-secundario);
   margin-top: 4px;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .modal__overlay {
-    padding: 12px;
-    align-items: flex-end;
+    padding: 0;
+    align-items: center;
   }
 
-  .modal__contenedor {
-    border-radius: var(--radio-borde) var(--radio-borde) 0 0;
+  .modal__container {
+    border-radius: var(--radio-borde);
+    width: 95%;
+  }
+
+  .modal__video-container {
+    min-height: 200px;
   }
 }

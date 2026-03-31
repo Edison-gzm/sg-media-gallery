@@ -1,111 +1,99 @@
- // Componente Presentacion
-// Modo presentación automática que recorre el contenido secuencialmente
-// Alterna entre imágenes y videos automáticamente
-// Permite configurar la duración en segundos
+// Slideshow component - auto-advances through media items, supports keyboard navigation and configurable image duration
 
 import { useState, useEffect } from 'react';
-import ReactPlayer from 'react-player';
 import '../styles/Presentacion.css';
 
-function Presentacion({ items, onSalir }) {
-  const [indice, setIndice] = useState(0);
-  const [duracion, setDuracion] = useState(4);
-  const [progreso, setProgreso] = useState(0);
+function Slideshow({ items, onExit }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [duration, setDuration] = useState(4);
+  const [progress, setProgress] = useState(0);
 
-  const itemActual = items[indice];
+  const currentItem = items[currentIndex];
 
-  // Avanza automáticamente al siguiente item
   useEffect(() => {
-    if (!itemActual || itemActual.tipo === 'video') return;
+    if (!currentItem || currentItem.type === 'video') return;
 
-    const intervalo = setInterval(() => {
-      setIndice(prev => (prev + 1) % items.length);
-      setProgreso(0);
-    }, duracion * 1000);
+    const slideInterval = setInterval(() => {
+      setCurrentIndex(prev => (prev + 1) % items.length);
+      setProgress(0);
+    }, duration * 1000);
 
-    // Actualiza la barra de progreso cada 100ms
-    const progresoIntervalo = setInterval(() => {
-      setProgreso(prev => Math.min(prev + (100 / (duracion * 10)), 100));
+    const progressInterval = setInterval(() => {
+      setProgress(prev => Math.min(prev + (100 / (duration * 10)), 100));
     }, 100);
 
     return () => {
-      clearInterval(intervalo);
-      clearInterval(progresoIntervalo);
+      clearInterval(slideInterval);
+      clearInterval(progressInterval);
     };
-  }, [indice, duracion, items, itemActual]);
+  }, [currentIndex, duration, items, currentItem]);
 
-  // Cierra con la tecla Escape
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onSalir();
-      if (e.key === 'ArrowRight') setIndice(prev => (prev + 1) % items.length);
-      if (e.key === 'ArrowLeft') setIndice(prev => (prev - 1 + items.length) % items.length);
+      if (e.key === 'Escape') onExit();
+      if (e.key === 'ArrowRight') setCurrentIndex(prev => (prev + 1) % items.length);
+      if (e.key === 'ArrowLeft') setCurrentIndex(prev => (prev - 1 + items.length) % items.length);
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [items, onSalir]);
+  }, [items, onExit]);
 
-  if (!itemActual) return null;
+  if (!currentItem) return null;
 
   return (
-    <div className="presentacion">
+    <div className="slideshow">
 
-      {/* Barra superior */}
-      <div className="presentacion__header">
-        <span className="presentacion__contador">
-          {indice + 1} / {items.length}
+      <div className="slideshow__header">
+        <span className="slideshow__counter">
+          {currentIndex + 1} / {items.length}
         </span>
 
-        <div className="presentacion__acciones">
-          {/* Control de duración */}
-          <div className="presentacion__duracion">
+        <div className="slideshow__actions">
+          <div className="slideshow__duration">
             <span>Duración:</span>
             <input
               type="number"
               min="1"
               max="30"
-              value={duracion}
-              onChange={(e) => setDuracion(Number(e.target.value))}
+              value={duration}
+              onChange={(e) => setDuration(Number(e.target.value))}
             />
             <span>seg</span>
           </div>
 
-          <button className="presentacion__btn-salir" onClick={onSalir}>
+          <button className="slideshow__exit-btn" onClick={onExit}>
             ✕ Salir
           </button>
         </div>
       </div>
 
-      {/* Contenido */}
-      <div className="presentacion__contenido">
-        {itemActual.tipo === 'imagen' ? (
+      <div className="slideshow__content">
+        {currentItem.type === 'image' ? (
           <img
-            key={itemActual.id}
-            src={itemActual.url}
-            alt={itemActual.titulo}
-            className="presentacion__imagen"
+            key={currentItem.id}
+            src={currentItem.url}
+            alt={currentItem.title}
+            className="slideshow__image"
           />
         ) : (
-              <video
-                key={itemActual.id}
-                controls
-                autoPlay
-                style={{ width: '100%', maxHeight: '70vh' }}
-                onEnded={() => setIndice(prev => (prev + 1) % items.length)}
-              >
-                <source src={itemActual.url} type="video/mp4" />
-              </video>
+          <video
+            key={currentItem.id}
+            controls
+            autoPlay
+            style={{ width: '100%', maxHeight: '70vh' }}
+            onEnded={() => setCurrentIndex(prev => (prev + 1) % items.length)}
+          >
+            <source src={currentItem.url} type="video/mp4" />
+          </video>
         )}
       </div>
 
-      {/* Título */}
-      <p className="presentacion__titulo">{itemActual.titulo}</p>
+      <p className="slideshow__title">{currentItem.title}</p>
 
-      {/* Barra de progreso - solo para imágenes */}
-      {itemActual.tipo === 'imagen' && (
+      {currentItem.type === 'image' && (
         <div
-          className="presentacion__progreso"
-          style={{ width: `${progreso}%`, transition: `width ${duracion}s linear` }}
+          className="slideshow__progress"
+          style={{ width: `${progress}%`, transition: `width ${duration}s linear` }}
         />
       )}
 
@@ -113,4 +101,4 @@ function Presentacion({ items, onSalir }) {
   );
 }
 
-export default Presentacion;
+export default Slideshow;

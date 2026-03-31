@@ -1,32 +1,28 @@
-// Punto de entrada del servidor
-// Conecta a PostgreSQL y arranca Express en el puerto configurado
+// Server entry point - connects to PostgreSQL and starts
 
 require('dotenv').config();
 const app = require('./src/app');
-const { conectarDB, sequelize } = require('./src/config/database');
+const { connectDB, sequelize } = require('./src/config/database');
 
 const PORT = process.env.PORT || 4000;
 
-const iniciarServidor = async () => {
+const startServer = async () => {
   try {
-    // Conecta a PostgreSQL
-    await conectarDB();
+    await connectDB();
 
-    // Sincroniza los modelos con la base de datos
-    // force: false para no borrar datos existentes
+    // force: false prevents dropping existing data on sync
     await sequelize.sync({ force: false });
-    console.log('Modelos sincronizados con PostgreSQL');
+    console.log('Models synchronized with PostgreSQL');
 
-    // Arranca el servidor
     app.listen(PORT, () => {
-      console.log(`Servidor corriendo en http://localhost:${PORT}`);
-      console.log(`API disponible en http://localhost:${PORT}/api`);
+      console.log(`Server running at http://localhost:${PORT}`);
+      console.log(`API available at http://localhost:${PORT}/api`);
     });
 
   } catch (error) {
-    console.error('Error al iniciar el servidor:', error.message);
+    console.error('Error starting server:', error.message);
     process.exit(1);
   }
 };
 
-iniciarServidor();
+startServer();

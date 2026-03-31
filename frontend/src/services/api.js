@@ -1,14 +1,12 @@
- // Servicio de conexión con el backend
-// Centraliza todas las peticiones HTTP al API
+// The Axios library is used to connect the backend with the frontend, tokens are automatically injected into every request for security reasons, 
+// and functions are included to facilitate or speed up programming.
 
 import axios from 'axios';
 
-// URL base
 const API = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'http://localhost:4000/api'
 });
 
-// Interceptor - agrega el token JWT automáticamente a cada petición
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -17,14 +15,11 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
-// Servicios de contenido
-export const obtenerContenido = () => API.get('/contenido');
-export const obtenerContenidoPorId = (id) => API.get(`/contenido/${id}`);
+export const getContent = () => API.get('/contenido');
+export const getContentById = (id) => API.get(`/contenido/${id}`);
 
-// Servicios de favoritos
-export const obtenerFavoritos = () => API.get('/favoritos');
-export const agregarFavorito = (contenidoId) => API.post('/favoritos', { contenidoId });
-export const eliminarFavorito = (id) => API.delete(`/favoritos/${id}`);
+export const getFavorites = () => API.get('/favoritos');
+export const addFavorite = (contentId) => API.post('/favoritos', { contenidoId: contentId });
+export const deleteFavorite = (id) => API.delete(`/favoritos/${id}`);
 
-// Servicios de autenticación
 export const login = (email, password) => API.post('/auth/login', { email, password });

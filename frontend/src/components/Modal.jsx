@@ -1,18 +1,14 @@
-// Componente Modal
-// Muestra el contenido seleccionado en detalle
-// Las imágenes tienen zoom interactivo al hacer clic
-// Los videos se reproducen con reproductor nativo HTML5
+// Modal that displays selected media in detail - images support interactive zoom, videos autoplay
 
 import { useState, useRef, useEffect } from 'react';
 import '../styles/Modal.css';
 
-function Modal({ item, onCerrar }) {
+function Modal({ item, onClose }) {
   const [zoom, setZoom] = useState(false);
   const videoRef = useRef(null);
 
-  // Reproduce el video cuando el modal abre
   useEffect(() => {
-    if (item?.tipo === 'video' && videoRef.current) {
+    if (item?.type === 'video' && videoRef.current) {
       videoRef.current.load();
     }
   }, [item]);
@@ -20,27 +16,25 @@ function Modal({ item, onCerrar }) {
   if (!item) return null;
 
   const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) onCerrar();
+    if (e.target === e.currentTarget) onClose();
   };
 
   return (
     <div className="modal__overlay" onClick={handleOverlayClick}>
-      <div className="modal__contenedor">
+      <div className="modal__container">
 
-        {/* Botón cerrar */}
-        <button className="modal__btn-cerrar" onClick={onCerrar}>✕</button>
+        <button className="modal__close-btn" onClick={onClose}>✕</button>
 
-        {/* Imagen con zoom interactivo */}
-        {item.tipo === 'imagen' ? (
+        {item.type === 'image' ? (
           <>
             <div
-              className="modal__imagen-contenedor"
+              className="modal__image-container"
               onClick={() => setZoom(!zoom)}
             >
               <img
                 src={item.url}
-                alt={item.titulo}
-                className={`modal__imagen ${zoom ? 'modal__imagen--zoom' : ''}`}
+                alt={item.title}
+                className={`modal__image ${zoom ? 'modal__image--zoom' : ''}`}
               />
             </div>
             <span className="modal__zoom-hint">
@@ -48,8 +42,7 @@ function Modal({ item, onCerrar }) {
             </span>
           </>
         ) : (
-          /* Reproductor nativo HTML5 */
-          <div className="modal__video-contenedor">
+          <div className="modal__video-container">
             <video
               ref={videoRef}
               controls
@@ -62,12 +55,9 @@ function Modal({ item, onCerrar }) {
           </div>
         )}
 
-        {/* Info del item */}
         <div className="modal__info">
-          <div>
-            <p className="modal__titulo">{item.titulo}</p>
-            <p className="modal__categoria">{item.categoria}</p>
-          </div>
+          <p className="modal__title">{item.title}</p>
+          <p className="modal__category">{item.category}</p>
         </div>
 
       </div>

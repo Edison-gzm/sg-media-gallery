@@ -1,6 +1,4 @@
- 
-/* Estilos del componente Navbar
-   Barra de navegación principal con categorías y botón de login */
+/* Navbar component styles - main navigation bar with categories and login button */
 
 .navbar {
   background-color: var(--color-fondo-card);
@@ -12,7 +10,7 @@
   backdrop-filter: blur(10px);
 }
 
-.navbar__contenedor {
+.navbar__container {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -21,7 +19,6 @@
   padding: 0 24px;
 }
 
-/* Logo */
 .navbar__logo {
   font-size: 20px;
   font-weight: 700;
@@ -33,14 +30,13 @@
   color: var(--color-acento);
 }
 
-/* Categorías */
-.navbar__categorias {
+.navbar__categories {
   display: flex;
   gap: 8px;
   list-style: none;
 }
 
-.navbar__btn-categoria {
+.navbar__btn-category {
   background: transparent;
   border: 1px solid var(--color-borde);
   color: var(--color-texto-secundario);
@@ -52,26 +48,25 @@
   transition: var(--transicion);
 }
 
-.navbar__btn-categoria:hover {
+.navbar__btn-category:hover {
   border-color: var(--color-primario);
   color: var(--color-texto);
 }
 
-.navbar__btn-categoria--activo {
+.navbar__btn-category--active {
   background: var(--color-primario);
   border-color: var(--color-primario);
   color: var(--color-texto);
   font-weight: 500;
 }
 
-/* Botones de acción */
-.navbar__acciones {
+.navbar__actions {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.navbar__btn-presentacion {
+.navbar__btn-slideshow {
   background: var(--color-acento);
   border: none;
   color: #000;
@@ -84,7 +79,7 @@
   transition: var(--transicion);
 }
 
-.navbar__btn-presentacion:hover {
+.navbar__btn-slideshow:hover {
   opacity: 0.85;
   transform: translateY(-1px);
 }
@@ -106,15 +101,44 @@
   color: var(--color-texto);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
-  .navbar__contenedor {
-    flex-direction: column;
-    gap: 12px;
+  .navbar__container {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 16px;
   }
 
-  .navbar__categorias {
+  .navbar__logo {
+    font-size: 18px;
+  }
+
+  .navbar__categories {
+    order: 3;
+    width: 100%;
     flex-wrap: wrap;
     justify-content: center;
+    gap: 6px;
+  }
+
+  .navbar__btn-category {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .navbar__actions {
+    gap: 8px;
+  }
+
+  .navbar__btn-slideshow,
+  .navbar__btn-login {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery__grid {
+    grid-template-columns: 1fr;
+    padding: 0 16px;
   }
 }
