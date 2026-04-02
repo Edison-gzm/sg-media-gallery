@@ -2,6 +2,7 @@
 
 import client from './client';
 
-export const getFavorites = () => client.get('/favorites');
+export const getFavorites = (page = 1, limit = 6) =>
+  client.get(`/favorites?page=${page}&limit=${limit}`);
 export const addFavorite = (contentId) => client.post('/favorites', { contentId  });
 export const removeFavorite = (id) => client.delete(`/favorites/${id}`);

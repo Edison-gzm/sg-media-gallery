@@ -4,9 +4,11 @@ import { Box, Typography, IconButton, Checkbox } from '@mui/material';
 import { Star, StarBorder, PlayArrow } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 
-const Card = styled(Box)(({ selected }) => ({
+const Card = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'isSelected',
+})(({ isSelected }) => ({
   background: '#161B22',
-  border: `1px solid ${selected === 'true' ? '#F0A500' : 'rgba(26,122,110,0.3)'}`,
+  border: `1px solid ${isSelected ? '#F0A500' : 'rgba(26,122,110,0.3)'}`,
   borderRadius: 8,
   overflow: 'hidden',
   cursor: 'pointer',
@@ -23,6 +25,9 @@ const ImageWrapper = styled(Box)({
   width: '100%',
   height: 200,
   overflow: 'hidden',
+  '&:hover .select-hint': {
+    opacity: 1,
+  },
 });
 
 const StyledImage = styled('img')({
@@ -89,6 +94,21 @@ const CardInfo = styled(Box)({
   padding: '14px 16px',
 });
 
+const SelectHint = styled(Box)({
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  right: 0,
+  background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)',
+  color: '#fff',
+  fontSize: 20,
+  textAlign: 'center',
+  padding: '16px 8px 6px',
+  opacity: 0,
+  transition: 'opacity 0.3s ease',
+  pointerEvents: 'none',
+});
+
 function MediaCard({ item, isFavorite, isAuthenticated, isSelected, onSelect, onToggleFavorite, onToggleSelect }) {
   const thumbnailUrl = item.type === 'image'
     ? item.url
@@ -96,7 +116,7 @@ function MediaCard({ item, isFavorite, isAuthenticated, isSelected, onSelect, on
 
   return (
     <Card
-      selected={isSelected.toString()}
+      isSelected={isSelected}
       onClick={() => onSelect(item)}
     >
       <ImageWrapper>
@@ -129,6 +149,10 @@ function MediaCard({ item, isFavorite, isAuthenticated, isSelected, onSelect, on
           onClick={(e) => { e.stopPropagation(); onToggleSelect(item); }}
           size="small"
         />
+
+        <SelectHint className="select-hint">
+          {isSelected ? '✓ Selected for presentation' : '☐ Select for presentation'}
+        </SelectHint>
       </ImageWrapper>
 
       <CardInfo>
