@@ -1,11 +1,33 @@
 // Gallery and favorites controller - handles content retrieval and favorites management
 
 const { Content, Favorite } = require('../models');
+const { Op } = require('sequelize');
 
 const getContent = async (req, res) => {
   try {
-    const content = await Content.findAll();
-    res.json(content);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6;
+    const offset = (page - 1) * limit;
+
+          const where = {};
+        if (req.query.category) where.category = req.query.category;
+
+        const { count, rows } = await Content.findAndCountAll({
+          where,
+          limit,
+          offset,
+          order: [['id', 'ASC']],
+        });
+
+    res.json({
+      data: rows,
+      pagination: {
+        total: count,
+        page,
+        limit,
+        totalPages: Math.ceil(count / limit),
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching content' });
   }
@@ -25,10 +47,26 @@ const getContentById = async (req, res) => {
 
 const getFavorites = async (req, res) => {
   try {
-    const favorites = await Favorite.findAll({
-      include: [{ model: Content }]
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6;
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await Favorite.findAndCountAll({
+      include: [{ model: Content }],
+      limit,
+      offset,
+      order: [['id', 'ASC']],
     });
-    res.json(favorites);
+
+    res.json({
+      data: rows,
+      pagination: {
+        total: count,
+        page,
+        limit,
+        totalPages: Math.ceil(count / limit),
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching favorites' });
   }

@@ -10,17 +10,31 @@ const useGalleryStore = create((set, get) => ({
   activeCategory: 'All',
   selectedItems: [],
 
-  fetchContent: async () => {
-    set({ loading: true, error: null });
-    try {
-      const response = await getAllContent();
-      set({ content: response.data, loading: false });
-    } catch (err) {
-      set({ error: err.message, loading: false });
-    }
-  },
+
+  pagination: {
+  page: 1,
+  totalPages: 1,
+  total: 0,
+  limit: 2,
+},
+
+ fetchContent: async (page = 1, category = null) => {
+  set({ loading: true, error: null });
+  try {
+    const response = await getAllContent(page, get().pagination.limit, category);
+    set({
+      content: response.data.data ?? [],
+      pagination: { ...get().pagination, ...response.data.pagination },
+      loading: false,
+    });
+  } catch (err) {
+    set({ error: err.message, loading: false });
+  }
+},
 
   setActiveCategory: (category) => set({ activeCategory: category }),
+  setPage: (page, category = null) => get().fetchContent(page, category),
+
 
   toggleSelectItem: (item) => {
     const { selectedItems } = get();

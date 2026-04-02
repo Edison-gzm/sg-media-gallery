@@ -5,15 +5,26 @@ import { getFavorites, addFavorite, removeFavorite } from '../api/favorites.api'
 
 const useFavoritesStore = create((set, get) => ({
   favorites: [],
+  pagination: {
+    page: 1,
+    totalPages: 1,
+    total: 0,
+    limit: 2,
+  },
 
-  fetchFavorites: async () => {
+  fetchFavorites: async (page = 1) => {
     try {
-      const response = await getFavorites();
-      set({ favorites: response.data });
+      const response = await getFavorites(page, get().pagination.limit);
+      set({
+        favorites: response.data.data ?? [],
+        pagination: { ...get().pagination, ...response.data.pagination },
+      });
     } catch (err) {
       console.error('Error fetching favorites:', err);
     }
   },
+
+  setFavoritesPage: (page) => get().fetchFavorites(page),
 
   toggleFavorite: async (item) => {
     const { favorites } = get();

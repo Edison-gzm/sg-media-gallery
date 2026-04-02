@@ -1,16 +1,16 @@
 // Main gallery page. Displays content grid with category filtering and favorites management.
 
 import { useEffect } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import { Box, Container, Typography } from '@mui/material';
+import { useParams, useLocation } from 'react-router-dom';
+import { Box, Container, Typography,Pagination} from '@mui/material';
 import { styled } from '@mui/material/styles';
-import useGalleryStore from '../../states/useGalleryStore';
-import useFavoritesStore from '../../states/useFavoritesStore';
-import useAuthStore from '../../states/useAuthStore';
-import Navbar from '../../components/Navbar/Navbar';
-import MediaCard from '../../components/MediaCard/MediaCard';
-import ImageViewer from '../../components/ImageViewer/ImageViewer';
-import VideoViewer from '../../components/VideoViewer/VideoViewer';
+import useGalleryStore from '../../store/useGalleryStore';
+import useFavoritesStore from '../../store/useFavoritesStore';
+import useAuthStore from '../../store/useAuthStore';
+import Navbar from '../../components/Navbar';
+import MediaCard from '../../components/MediaCard';
+import ImageViewer from '../../components/ImageViewer';
+import VideoViewer from '../../components/VideoViewer';
 import { useState } from 'react';
 
 const PageWrapper = styled(Box)({
@@ -38,32 +38,55 @@ const EmptyState = styled(Box)({
   color: '#8B949E',
 });
 
+const PaginationWrapper = styled(Box)({
+  display: 'flex',
+  justifyContent: 'center',
+  padding: '32px 0',
+  '& .MuiPaginationItem-root': {
+    color: '#8B949E',
+    borderColor: 'rgba(26,122,110,0.3)',
+  },
+  '& .MuiPaginationItem-root.Mui-selected': {
+    background: '#1A7A6E',
+    color: '#fff',
+  },
+});
+
 function GalleryPage() {
   const [selectedItem, setSelectedItem] = useState(null);
-  const { category } = useParams();
   const location = useLocation();
-  const { content, loading, fetchContent, selectedItems, toggleSelectItem, isSelected } = useGalleryStore();
+  const { content, loading, fetchContent, selectedItems, toggleSelectItem, isSelected, pagination, setPage } = useGalleryStore();
   const { fetchFavorites, toggleFavorite, isFavorite } = useFavoritesStore();
   const { isAuthenticated } = useAuthStore();
 
   useEffect(() => {
-    fetchContent();
+    fetchContent(1);
   }, [fetchContent]);
 
   useEffect(() => {
     if (isAuthenticated) fetchFavorites();
   }, [isAuthenticated, fetchFavorites]);
 
-  const getFilteredContent = () => {
-    if (location.pathname === '/favorites') {
-      return content.filter(item => isFavorite(item.id));
-    }
-    if (category) {
-      return content.filter(item => item.category === category);
-    }
-    return content;
-  };
+ useEffect(() => {
+  const params = new URLSearchParams(location.search);
+  const cat = params.get('category');
+  fetchContent(1, cat);
+}, [location.search, location.pathname, fetchContent]);
 
+
+const getFilteredContent = () => {
+  if (!content) return [];
+  if (location.pathname === '/favorites') {
+    const { favorites } = useFavoritesStore.getState();
+    return favorites.map(f => f.Content || f.content).filter(Boolean);
+  }
+  const params = new URLSearchParams(location.search);
+  const cat = params.get('category');
+  if (cat) {
+    return content.filter(item => item.category === cat);
+  }
+  return content;
+};
   const filteredContent = getFilteredContent();
 
   return (
@@ -78,10 +101,10 @@ function GalleryPage() {
           <EmptyState>
             <Typography variant="h6">Loading gallery...</Typography>
           </EmptyState>
-        ) : filteredContent.length === 0 ? (
-          <EmptyState>
-            <Typography variant="h6">No content in this category</Typography>
-          </EmptyState>
+        ) : filteredContent.length === 0 && !loading ? (
+            <EmptyState>
+              <Typography variant="h6">No content in this category</Typography>
+            </EmptyState> 
         ) : (
           <ContentGrid>
             {filteredContent.map(item => (
@@ -98,6 +121,33 @@ function GalleryPage() {
             ))}
           </ContentGrid>
         )}
+            {(() => {
+              const isFavorites = location.pathname === '/favorites';
+              const { pagination: favPagination, setFavoritesPage } = useFavoritesStore.getState();
+              const totalPages = isFavorites ? favPagination.totalPages : pagination.totalPages;
+              const currentPage = isFavorites ? favPagination.page : pagination.page;
+
+              return totalPages > 1 ? (
+                <PaginationWrapper>
+                  <Pagination
+                    count={totalPages}
+                    page={currentPage}
+                    onChange={(e, page) => {
+                      if (isFavorites) {
+                        setFavoritesPage(page);
+                      } else {
+                        const params = new URLSearchParams(location.search);
+                        const cat = params.get('category');
+                        setPage(page, cat);
+                      }
+                    }}
+                    variant="outlined"
+                    shape="rounded"
+                  />
+                </PaginationWrapper>
+              ) : null;
+            })()}
+
       </Container>
 
       {selectedItem?.type === 'image' && (

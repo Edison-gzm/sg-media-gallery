@@ -1,11 +1,11 @@
 // Login page. Handles user authentication and redirects to gallery on success.
 
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation  } from 'react-router-dom';
 import { Box, Paper, Typography, Alert } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
-import useAuthStore from '../../states/useAuthStore';
+import useAuthStore from '../../store/useAuthStore';
 import Input from '../../atoms/Input/Input';
 import Button from '../../atoms/Button/Button';
 
@@ -59,6 +59,7 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
   const { login } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -66,7 +67,8 @@ function LoginPage() {
     setLoading(true);
     try {
       await login(email, password);
-      navigate('/');
+      const destination = location.state?.from?.pathname + (location.state?.from?.search || '');
+      navigate(destination || '/');
     } catch {
       setError('Invalid email or password');
     } finally {
