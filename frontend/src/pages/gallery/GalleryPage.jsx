@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { Box, Container, Typography,Pagination} from '@mui/material';
+import { Box, Container, Typography,Pagination,Select, MenuItem} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import useGalleryStore from '../../store/useGalleryStore';
 import useFavoritesStore from '../../store/useFavoritesStore';
@@ -40,7 +40,9 @@ const EmptyState = styled(Box)({
 
 const PaginationWrapper = styled(Box)({
   display: 'flex',
-  justifyContent: 'center',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: 12,
   padding: '32px 0',
   '& .MuiPaginationItem-root': {
     color: '#8B949E',
@@ -55,8 +57,8 @@ const PaginationWrapper = styled(Box)({
 function GalleryPage() {
   const [selectedItem, setSelectedItem] = useState(null);
   const location = useLocation();
-  const { content, loading, fetchContent, selectedItems, toggleSelectItem, isSelected, pagination, setPage } = useGalleryStore();
-  const { fetchFavorites, toggleFavorite, isFavorite } = useFavoritesStore();
+  const { content, loading, fetchContent, selectedItems, toggleSelectItem, isSelected, pagination, setPage, setLimit } = useGalleryStore();
+  const { fetchFavorites, toggleFavorite, isFavorite, setFavoritesLimit } = useFavoritesStore();
   const { isAuthenticated } = useAuthStore();
 
   useEffect(() => {
@@ -88,6 +90,7 @@ const getFilteredContent = () => {
   return content;
 };
   const filteredContent = getFilteredContent();
+  const PAGE_SIZE_OPTIONS = [10,15,20];
 
   return (
     <PageWrapper>
@@ -127,25 +130,53 @@ const getFilteredContent = () => {
               const totalPages = isFavorites ? favPagination.totalPages : pagination.totalPages;
               const currentPage = isFavorites ? favPagination.page : pagination.page;
 
-              return totalPages > 1 ? (
-                <PaginationWrapper>
-                  <Pagination
-                    count={totalPages}
-                    page={currentPage}
-                    onChange={(e, page) => {
-                      if (isFavorites) {
-                        setFavoritesPage(page);
-                      } else {
-                        const params = new URLSearchParams(location.search);
-                        const cat = params.get('category');
-                        setPage(page, cat);
-                      }
-                    }}
-                    variant="outlined"
-                    shape="rounded"
-                  />
-                </PaginationWrapper>
-              ) : null;
+              return totalPages >= 1 ? (
+                  <PaginationWrapper>
+                    <Pagination
+                      count={totalPages}
+                      page={currentPage}
+                      onChange={(e, page) => {
+                        if (isFavorites) {
+                          setFavoritesPage(page);
+                        } else {
+                          const params = new URLSearchParams(location.search);
+                          const cat = params.get('category');
+                          setPage(page, cat);
+                        }
+                      }}
+                      variant="outlined"
+                      shape="rounded"
+                    />
+                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1}}>
+                      <Typography variant="body2" sx={{ color: '#8B949E' }}>
+                        Show:
+                      </Typography>
+                      <Select
+                        value={isFavorites ? favPagination.limit : pagination.limit}
+                        onChange={(e) => isFavorites ? setFavoritesLimit(e.target.value) : setLimit(e.target.value)}
+                        size="small"
+                        sx={{
+                          color: '#fff',
+                          fontSize: 13,
+                          height: 32,
+                          background: 'transparent',
+                          border: '1px solid rgba(26,122,110,0.3)',
+                          borderRadius: 1,
+                          '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                          '& .MuiSvgIcon-root': { color: '#8B949E' },
+                          '&:hover': { borderColor: '#1A7A6E' },
+                          '&.Mui-focused': { borderColor: '#1A7A6E' },
+                        }}
+                      >
+                        {PAGE_SIZE_OPTIONS.map(n => (
+                          <MenuItem key={n} value={n} sx={{ fontSize: 13 }}>
+                            {n}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </Box>
+                  </PaginationWrapper>
+                ) : null;
             })()}
 
       </Container>

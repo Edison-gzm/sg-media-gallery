@@ -132,13 +132,14 @@ const handlePresentation = () => {
   if (selectedItems.length > 0) {
      const ids = selectedItems.map(i => i.id).join(',');
      navigate(`/presentation?ids=${ids}`, { state: { fromApp: true } });
-  } else if (location.pathname === '/favorites') {
-    navigate('/presentation?category=Favorites');
-  } else if (activeCategory && activeCategory !== 'All') {
-    navigate(`/presentation?category=${activeCategory}`);
-  } else {
-    navigate('/presentation');
-  }
+    } else if (location.pathname === '/favorites') {
+      navigate('/presentation?category=Favorites', { state: { fromApp: true } });
+    } else if (activeCategory && activeCategory !== 'All') {
+      navigate(`/presentation?category=${activeCategory}`, { state: { fromApp: true } });
+    } else {
+      navigate('/presentation', { state: { fromApp: true } });
+    }
+
 };
 
   const allCategories = [...CATEGORIES, ...(isAuthenticated ? ['Favorites'] : [])];

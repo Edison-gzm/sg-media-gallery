@@ -9,7 +9,7 @@ const useFavoritesStore = create((set, get) => ({
     page: 1,
     totalPages: 1,
     total: 0,
-    limit: 2,
+    limit: 10,
   },
 
   fetchFavorites: async (page = 1) => {
@@ -25,6 +25,10 @@ const useFavoritesStore = create((set, get) => ({
   },
 
   setFavoritesPage: (page) => get().fetchFavorites(page),
+  setFavoritesLimit: (limit) => {
+  set({ pagination: { ...get().pagination, limit, page: 1 } });
+  get().fetchFavorites(1);
+},
 
   toggleFavorite: async (item) => {
     const { favorites } = get();
