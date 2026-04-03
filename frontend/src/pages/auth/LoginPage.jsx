@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useNavigate,useLocation  } from 'react-router-dom';
 import { Box, Paper, Typography, Alert } from '@mui/material';
-import { LockOutlined } from '@mui/icons-material';
+import { LockOutlined, ArrowBack  } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import useAuthStore from '../../store/useAuthStore';
 import Input from '../../atoms/Input/Input';
@@ -50,6 +50,22 @@ const CredentialsBox = styled(Box)({
 const HighlightText = styled('span')({
   color: '#1A7A6E',
   fontWeight: 500,
+}); 
+
+const BackButton = styled('button')({
+  display: 'flex',
+  alignItems: 'center',
+  gap: 6,
+  background: 'none',
+  border: 'none',
+  color: '#8B949E',
+  cursor: 'pointer',
+  fontSize: 14,
+  padding: '0 0 16px 0',
+  transition: 'color 0.2s',
+  '&:hover': {
+    color: '#1A7A6E',
+  },
 });
 
 function LoginPage() {
@@ -79,6 +95,11 @@ function LoginPage() {
   return (
     <PageWrapper>
       <LoginCard elevation={3}>
+
+        <BackButton onClick={() => navigate('/')}>
+          <ArrowBack sx={{ fontSize: 16 }} />
+            Back to Gallery
+          </BackButton>
         <CardHeader>
           <LockOutlined sx={{ fontSize: 40, color: '#1A7A6E', mb: 1 }} />
           <Typography variant="h5" color="#fff" fontWeight={700}>

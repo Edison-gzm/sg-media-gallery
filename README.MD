@@ -7,6 +7,7 @@ Galería interactiva de imágenes y videos desarrollada como prueba técnica par
 ## 🚀 Tecnologías utilizadas
 
 ### Frontend *(foco principal)*
+
 | Tecnología | Versión | Por qué se usó |
 |-----------|---------|----------------|
 | React.js | 19 | Librería principal para construir la UI con componentes reutilizables |
@@ -16,6 +17,7 @@ Galería interactiva de imágenes y videos desarrollada como prueba técnica par
 | Axios | 1 | Cliente HTTP con interceptores para agregar JWT automáticamente |
 
 ### Backend *(capa de soporte)*
+
 | Tecnología | Por qué se usó |
 |-----------|----------------|
 | Node.js + Express | API REST que expone los endpoints al frontend |
@@ -34,6 +36,7 @@ Galería interactiva de imágenes y videos desarrollada como prueba técnica par
 ---
 
 ## 📦 Cómo correr el proyecto
+
 ```bash
 git clone https://github.com/Edison-gzm/sg-media-gallery.git
 cd sg-media-gallery
@@ -77,6 +80,7 @@ Password: 1234
 ## 🗂️ Arquitectura del Frontend
 
 La estructura de carpetas sigue el patrón **Atomic Design** adaptado:
+
 ```
 frontend/src/
 │
@@ -107,21 +111,93 @@ frontend/src/
 ├── router/
 │   └── AppRouter.jsx       # Definición de rutas con React Router
 │
-├── store/                  # Estados globales con Zustand
-│   ├── useAuthStore.js     # Estado de autenticación
-│   ├── useGalleryStore.js  # Estado del contenido y selección
-│   └── useFavoritesStore.js # Estado de favoritos
+├── services/               # Lógica de negocio desacoplada de componentes
+│   └── (helpers, transformaciones, utilidades reutilizables)
 │
-└── App.jsx                 # ThemeProvider de MUI y punto de entrada
+├── store/                  # Estados globales con Zustand
+│   ├── useAuthStore.js     # Estado de autenticación y token JWT
+│   ├── useGalleryStore.js  # Estado del contenido, filtros y selección
+│   └── useFavoritesStore.js # Estado de favoritos del usuario
+│
+├── styles/                 # Estilos globales y por módulo
+│   ├── GaleriaGrid.css     # Layout de grilla responsiva de la galería
+│   ├── Global.css          # Reset y variables CSS globales
+│   ├── Login.css           # Estilos del formulario de autenticación
+│   ├── Modal.css           # Estilos de los modales (imagen y video)
+│   ├── Navbar.css          # Estilos de la barra de navegación
+│   └── Presentacion.css    # Estilos del modo presentación automática
+│
+├── App.css                 # Estilos raíz de la aplicación
+├── App.jsx                 # ThemeProvider de MUI y punto de entrada
+├── index.css               # Estilos base del HTML
+└── index.js                # Punto de montaje de React en el DOM
 ```
 
 ---
 
-## 🔄 Cómo funciona el flujo de datos
+## 🧩 Detalle de componentes del Frontend
 
-### 1. Llamada a endpoints
-Todos los llamados al backend pasan por `api/client.js` que tiene un interceptor de Axios:
+### Atoms — Primitivos reutilizables
+
+Los átomos son los bloques más pequeños de la interfaz. Están envueltos sobre MUI para centralizar la configuración visual (colores, tamaños, variantes) en un único lugar. Si en el futuro cambia el design system, solo se modifica el átomo, no cada componente que lo usa.
+
+| Átomo | Descripción |
+|-------|-------------|
+| `Button` | Botón sobre `MUI Button` — define variantes propias (primario, icono, peligro) |
+| `Input` | Campo de texto sobre `MUI TextField` — maneja estados de error y label |
+| `Badge` | Etiqueta visual sobre `MUI Chip` — usada para mostrar categorías en las tarjetas |
+
+### Components — Bloques funcionales
+
+| Componente | Responsabilidad |
+|-----------|-----------------|
+| `MediaCard` | Tarjeta de galería. Muestra miniatura, tipo (imagen/video), badge de categoría, botón de favorito y checkbox de selección. Al hacer clic abre `ImageViewer` o `VideoViewer` según el tipo de contenido. |
+| `ImageViewer` | Modal de visualización de imagen con zoom interactivo. Un clic activa el zoom, otro lo desactiva. Permite navegar entre items del contexto actual. |
+| `VideoViewer` | Modal de reproducción de video. Usa el tag nativo `<video>` de HTML5 con `autoplay` y controles completos. |
+| `Navbar` | Barra de navegación superior. Incluye links a categorías (Nature, Technology, Art), acceso a Favoritos, botón de Login/Logout y menú hamburguesa en resoluciones móviles. |
+
+### Pages — Vistas completas
+
+#### `GalleryPage.jsx`
+Página principal de la aplicación. Se monta en la ruta `/` y en `/category/:category`. Se encarga de:
+- Llamar a `fetchContent()` del store al montar para cargar los items desde el backend.
+- Filtrar los items según la categoría activa en la URL o si se está en la vista de favoritos.
+- Renderizar la grilla de `MediaCard` con los items filtrados.
+- Exponer el botón para iniciar la presentación con los items seleccionados.
+
+#### `LoginPage.jsx`
+Formulario de autenticación montado en `/login`. Usa los átomos `Input` y `Button`. Al submit llama a `login()` del `useAuthStore`, que internamente hace el POST a `/api/auth/login`, guarda el JWT en `localStorage` y redirige al usuario a la galería.
+
+#### `PresentationPage.jsx`
+Modo de presentación automática montado en `/presentation` (ruta protegida). Cicla entre los items seleccionados o todos los de la galería si no hay selección. Permite configurar la duración de cada slide en segundos. Soporta navegación manual con las teclas ← y →, y salida con Escape.
+
+### Services — Lógica desacoplada
+
+La carpeta `services/` agrupa funciones puras y helpers que no pertenecen a un componente específico. Separan la lógica de negocio de la lógica de presentación, lo que facilita el testing y la reutilización.
+
+### Styles — Hoja de estilos por módulo
+
+Aunque el proyecto usa MUI como sistema de componentes principal, se mantienen archivos CSS dedicados para:
+
+| Archivo | Qué controla |
+|---------|-------------|
+| `GaleriaGrid.css` | Layout responsivo de la grilla (columnas, gaps, breakpoints) |
+| `Global.css` | Variables CSS, reset de estilos, tipografía base |
+| `Login.css` | Centrado y estilos del card de login |
+| `Modal.css` | Overlay, animación de apertura y cierre de modales |
+| `Navbar.css` | Altura, z-index y comportamiento del menú hamburguesa |
+| `Presentacion.css` | Pantalla completa, transiciones entre slides |
+
+---
+
+## 🔄 Flujo de datos del Frontend
+
+### 1. Interceptor de Axios — JWT automático
+
+Todos los llamados al backend pasan por `api/client.js`, que configura un interceptor de Axios:
+
 ```javascript
+// api/client.js
 client.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
@@ -129,34 +205,50 @@ client.interceptors.request.use((config) => {
 });
 ```
 
-Esto hace que el token JWT se agregue automáticamente a cada petición sin tener que hacerlo manualmente en cada componente.
+Esto agrega el token JWT a cada petición sin repetir lógica en cada componente. Si el token no existe (usuario no autenticado), la cabecera simplemente no se incluye.
 
 Los endpoints están separados por dominio:
 - `auth.api.js` → `POST /api/auth/login`
 - `content.api.js` → `GET /api/content`, `GET /api/content/:id`
-- `favorites.api.js` → `GET/POST/DELETE /api/favorites`
+- `favorites.api.js` → `GET /POST /DELETE /api/favorites`
 
 ### 2. Estado global con Zustand
-En lugar de usar Context API o prop drilling, el estado global vive en stores de Zustand:
+
+En lugar de Context API o prop drilling, el estado global vive en stores de Zustand. Cada store es independiente y se importa directamente en cualquier componente:
+
 ```javascript
-// Ejemplo: cualquier componente accede al estado así
 const { content, fetchContent } = useGalleryStore();
-const { isAuthenticated } = useAuthStore();
-const { toggleFavorite } = useFavoritesStore();
+const { isAuthenticated, login, logout } = useAuthStore();
+const { favorites, toggleFavorite } = useFavoritesStore();
 ```
 
-Zustand fue elegido sobre Redux por su simplicidad — no requiere reducers, actions ni providers. El store se define en una sola función y se consume directamente en cualquier componente.
+**¿Por qué Zustand sobre Redux?**
+- No requiere reducers, actions ni providers
+- El store se define en una sola función
+- Menos boilerplate, más legible para equipos pequeños
+- Compatible con React DevTools
 
-### 3. Rutas
-React Router maneja la navegación:
+#### `useAuthStore`
+Maneja el estado de sesión del usuario. Expone `isAuthenticated`, el objeto `user` y los métodos `login()` y `logout()`. Al hacer login, persiste el JWT en `localStorage`. Al hacer logout, limpia el estado y el token.
 
-| Ruta | Componente | Protegida |
-|------|-----------|-----------|
-| `/` | GalleryPage | No |
-| `/category/:category` | GalleryPage | No |
-| `/favorites` | GalleryPage | No |
-| `/login` | LoginPage | No |
-| `/presentation` | PresentationPage | ✅ Sí |
+#### `useGalleryStore`
+Centraliza el contenido de la galería. Almacena todos los items cargados desde el backend, el término de búsqueda activo y los items seleccionados para la presentación. Expone `fetchContent()` para cargar los datos y métodos para manejar la selección.
+
+#### `useFavoritesStore`
+Gestiona los favoritos del usuario autenticado. Se sincroniza con el backend al cargar y al hacer toggle. Si el usuario no está autenticado, las acciones de favoritos redirigen al login.
+
+### 3. Rutas con React Router v7
+
+```
+AppRouter.jsx
+├── /                     → GalleryPage (todos los items)
+├── /category/:category   → GalleryPage (filtrado por categoría)
+├── /favorites            → GalleryPage (filtrado por favoritos)
+├── /login                → LoginPage
+└── /presentation         → PresentationPage ✅ (ruta protegida)
+```
+
+La ruta `/presentation` está protegida con un componente `PrivateRoute` que verifica `isAuthenticated` del store. Si el usuario no está autenticado, redirige a `/login`.
 
 ---
 
@@ -173,7 +265,19 @@ React Router maneja la navegación:
 
 ---
 
+## 📱 Diseño Responsivo
+
+El layout se adapta a distintas resoluciones usando una combinación de CSS Grid, Flexbox y breakpoints de MUI:
+
+| Resolución | Comportamiento |
+|-----------|----------------|
+| Mobile (< 600px) | 1 columna, menú hamburguesa, sin texto en botones |
+| Tablet (600–960px) | 2 columnas, navbar compacta |
+| Desktop (> 960px) | 3–4 columnas, navbar completa con links |
+
+---
+
 ## 👨‍💻 Desarrollado por
 
-**Edison Largo** — Desarrollador Full Stack
+**Edison Largo** — Desarrollador Full Stack  
 Edisonlargo22@gmail.com

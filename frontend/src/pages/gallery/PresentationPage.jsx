@@ -98,7 +98,7 @@ function PresentationPage() {
   const [progress, setProgress] = useState(0);
   const [urlItems, setUrlItems] = useState([]);
   const [cameFromUrl] = useState(() => { 
-    return !!searchParams.get('ids') && !routerLocation.state?.fromApp;
+    return !routerLocation.state?.fromApp;
   });
   const { content, selectedItems, clearSelection, fetchContent } = useGalleryStore();
   const navigate = useNavigate();
@@ -167,9 +167,18 @@ function PresentationPage() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [items, navigate, clearSelection]);
 
-  if (!currentItem && items.length === 0) return null;
-  if (!currentItem && items.length > 0) { clearSelection(); cameFromUrl ? navigate('/') : navigate(-1); return null; }
+  useEffect(() => {
+  if (!currentItem && items.length > 0) {
+    clearSelection();
+    cameFromUrl ? navigate('/') : navigate(-1);
+  }
+}, [currentItem, items.length]);
 
+  if (!currentItem && items.length === 0) return null;
+  if (!currentItem) return null;
+
+
+  
     const handleExit = () => {
     clearSelection();
     cameFromUrl ? navigate('/') : cameFromUrl ? navigate('/') : navigate(-1);
