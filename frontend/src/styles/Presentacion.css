@@ -1,0 +1,115 @@
+/* Presentation component styles - automatic slideshow mode that cycles through content sequentially */
+
+.presentation {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 900;
+  animation: fadeIn 0.3s ease;
+}
+
+.presentation__header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+}
+
+.presentation__counter {
+  color: var(--color-texto-secundario);
+  font-size: 14px;
+}
+
+.presentation__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.presentation__duration {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-texto-secundario);
+  font-size: 13px;
+}
+
+.presentation__duration input {
+  width: 50px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid var(--color-borde);
+  color: var(--color-texto);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.presentation__btn-exit {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid var(--color-borde);
+  color: var(--color-texto);
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  transition: var(--transicion);
+}
+
+.presentation__btn-exit:hover {
+  background: var(--color-primario);
+  border-color: var(--color-primario);
+}
+
+.presentation__content {
+  width: 100%;
+  max-width: 900px;
+  padding: 80px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.presentation__image {
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  border-radius: var(--radio-borde);
+  animation: fadeIn 0.5s ease;
+}
+
+.presentation__video {
+  width: 100%;
+}
+
+.presentation__title {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: var(--color-texto);
+  font-size: 20px;
+  font-weight: 600;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  white-space: nowrap;
+}
+
+.presentation__progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--color-primario);
+  transition: width linear;
+}
